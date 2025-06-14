@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>Expense Tracker</h1>
+</header>
+
+<main>
+  <!-- Form Section -->
+  <section id="form-section">
+    <h2>Add New Expense</h2>
+    <form id="expense-form">
+      <input type="text" id="description" placeholder="Description" required />
+      <input type="number" id="amount" step="0.01" placeholder="Amount (+/-)" required />
+      <input type="date" id="date" required />
+      <button type="submit">Add Expense</button>
+    </form>
+  </section>
+
+  <!-- Expenses List Section -->
+  <section id="expenses-section">
+  <h2>Transactions</h2>
+  
+  <div id="filters">
+  <label>
+    Type:
+    <select id="type-filter">
+      <option value="all">All</option>
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+  </label>
+
+  <label>
+    Date:
+    <input type="date" id="date-filter" />
+  </label>
+</div>
+
+  <div class="columns">
+    <div>
+      <h3>Income</h3>
+      <ul id="income-list"></ul>
+    </div>
+    <div>
+      <h3>Expenses</h3>
+      <ul id="expense-list"></ul>
+    </div>
+  </div>
+  <p id="total">Total Balance: $0.00</p>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2025 Expense Tracker App</p>
+</footer>
+
+<!-- 🔗 Link to your JS file -->
+<script src="script.js"></script>
+
+</body>
+</html>
