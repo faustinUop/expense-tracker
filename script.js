@@ -89,13 +89,14 @@ function updateUI() {
 
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${exp.description} (${exp.date})</span>
-      <span>
-        $${exp.amount.toFixed(2)}
-        <button onclick="editExpense(${exp.id})">✏️</button>
-        <button onclick="deleteExpense(${exp.id})">🗑️</button>
-      </span>
-    `;
+  <span>${exp.description} (${exp.date})</span>
+  <span>
+    $${exp.amount.toFixed(2)}
+    <button title="Edit" onclick="editExpense(${exp.id})">✏️</button>
+    <button title="Delete" onclick="deleteExpense(${exp.id})">🗑️</button>
+  </span>
+`;
+
 
     if (exp.amount >= 0) {
       li.className = "income";
