@@ -21,6 +21,12 @@ A simple, responsive Expense Tracker built using **HTML5**, **CSS3**, and **vani
 - JavaScript (DOM, localStorage, CRUD)
 
 ## 📸 Screenshot
-![App Screenshot](screenshot.png) <!-- Add a real screenshot and name it 'screenshot.png' -->
+![image](https://github.com/user-attachments/assets/55758a3e-e36d-4f3e-b7d2-74e4e79a707b)
+
 
 ## 📂 Folder Structure
+expense-tracker/
+├── index.html
+├── style.css
+├── script.js
+└── README.md
