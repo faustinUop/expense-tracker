@@ -3,111 +3,115 @@ const form = document.getElementById("expense-form");
 const descriptionInput = document.getElementById("description");
 const amountInput = document.getElementById("amount");
 const dateInput = document.getElementById("date");
-const expensesList = document.getElementById("expenses-list");
-const totalDisplay = document.getElementById("total");
+const typeInput = document.getElementById("type");
 const typeFilter = document.getElementById("type-filter");
 const dateFilter = document.getElementById("date-filter");
+const transactionsBody = document.getElementById("transactions-body");
+const totalDisplay = document.getElementById("total");
 
-
-// Load expenses from localStorage or start with an empty array
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+// Load transactions from localStorage or start with an empty array
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 updateUI();
 
-// Add new expense on form submit
+// Add new Transaction on form submit
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
+  const type = typeInput.value;
   const description = descriptionInput.value.trim();
   const amount = parseFloat(amountInput.value.trim());
   const date = dateInput.value;
 
-  if (!description || isNaN(amount) || !date) {
-    alert("Please fill in all fields with valid data.");
+  if (!type || !description || isNaN(amount) || !date) {
+    alert("Please fill in all fields correctly.");
     return;
   }
 
-  const expense = {
-    id: Date.now(), // unique ID
+  const adjustedAmount = type === "expense" ? -Math.abs(amount) : Math.abs(amount);
+
+  const transaction = {
+    id: Date.now(),
+    type,
     description,
-    amount,
+    amount: adjustedAmount,
     date,
   };
 
-  expenses.push(expense);
+  transactions.push(transaction);
   saveAndUpdate();
   form.reset();
 });
 
-// Save expenses to localStorage and update UI
+// Save transactions to localStorage and update UI
 function saveAndUpdate() {
-  localStorage.setItem("expenses", JSON.stringify(expenses));
+  localStorage.setItem("transactions", JSON.stringify(transactions));
   updateUI();
 }
 
-// Delete expense by ID
+// Delete transaction by ID
 function deleteExpense(id) {
-  expenses = expenses.filter(exp => exp.id !== id);
+  transactions = transactions.filter(exp => exp.id !== id);
   saveAndUpdate();
 }
 
-// Edit expense (pre-fills form, deletes old record)
+// Edit transaction (pre-fills form, deletes old record)
 function editExpense(id) {
-  const expense = expenses.find(exp => exp.id === id);
-  if (!expense) return;
+  const transaction = transactions.find(exp => exp.id === id);
+  if (!transaction) return;
 
-  descriptionInput.value = expense.description;
-  amountInput.value = expense.amount;
-  dateInput.value = expense.date;
+  typeInput.value = transaction.type;
+  descriptionInput.value = transaction.description;
+  amountInput.value = Math.abs(transaction.amount);
+  dateInput.value = transaction.date;
 
-  expenses = expenses.filter(exp => exp.id !== id);
+  transactions = transactions.filter(exp => exp.id !== id);
   saveAndUpdate();
 }
 
 // Update the list and total balance
 function updateUI() {
-  const incomeList = document.getElementById("income-list");
-  const expenseList = document.getElementById("expense-list");
-  incomeList.innerHTML = "";
-  expenseList.innerHTML = "";
+  transactionsBody.innerHTML = "";
   let total = 0;
 
-  expenses
-  .filter(exp => {
-    const matchesType =
-      typeFilter.value === "all" ||
-      (typeFilter.value === "income" && exp.amount >= 0) ||
-      (typeFilter.value === "expense" && exp.amount < 0);
+  transactions
+    .filter(exp => {
+      const matchesType =
+        !typeFilter || !typeFilter.value ||
+        typeFilter.value === "all" ||
+        typeFilter.value === exp.type;
 
-    const matchesDate =
-      !dateFilter.value || exp.date === dateFilter.value;
+      const matchesDate =
+        !dateFilter || !dateFilter.value ||
+        exp.date === dateFilter.value;
 
-    return matchesType && matchesDate;
-  })
-  .forEach(exp => {
+      return matchesType && matchesDate;
+    })
+    .forEach(exp => {
+      total += exp.amount;
 
-    total += exp.amount;
+      const tr = document.createElement("tr");
+      tr.className = exp.type === "income" ? "income" : "expense";
 
-    const li = document.createElement("li");
-    li.innerHTML = `
-  <span>${exp.description} (${exp.date})</span>
-  <span>
-    $${exp.amount.toFixed(2)}
-    <button title="Edit" onclick="editExpense(${exp.id})">✏️</button>
-    <button title="Delete" onclick="deleteExpense(${exp.id})">🗑️</button>
-  </span>
-`;
+      tr.innerHTML = `
+        <td>${capitalize(exp.type)}</td>
+        <td>RWF${exp.amount.toFixed(2)}</td>
+        <td>${exp.date}</td>
+        <td>
+          <button title="Edit" onclick="editExpense(${exp.id})">✏️</button>
+          <button title="Delete" onclick="deleteExpense(${exp.id})">🗑️</button>
+        </td>
+      `;
 
+      transactionsBody.appendChild(tr);
+    });
 
-    if (exp.amount >= 0) {
-      li.className = "income";
-      incomeList.appendChild(li);
-    } else {
-      li.className = "expense";
-      expenseList.appendChild(li);
-    }
-  });
-
-  totalDisplay.textContent = `Total Balance: $${total.toFixed(2)}`;
+  totalDisplay.textContent = `Total Balance: RWF${total.toFixed(2)}`;
 }
-typeFilter.addEventListener("change", updateUI);
-dateFilter.addEventListener("change", updateUI);
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// Filter events (optional, if you add dropdowns for filtering)
+if (typeFilter) typeFilter.addEventListener("change", updateUI);
+if (dateFilter) dateFilter.addEventListener("change", updateUI);
