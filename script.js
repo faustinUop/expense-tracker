@@ -112,6 +112,6 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Filter events (optional, if you add dropdowns for filtering)
+// Filter events 
 if (typeFilter) typeFilter.addEventListener("change", updateUI);
 if (dateFilter) dateFilter.addEventListener("change", updateUI);
