@@ -50,13 +50,13 @@ function saveAndUpdate() {
 
 // Delete transaction by ID
 function deleteExpense(id) {
-  transactions = transactions.filter(exp => exp.id !== id);
+  transactions = transactions.filter(trans => trans.id !== id);
   saveAndUpdate();
 }
 
 // Edit transaction (pre-fills form, deletes old record)
 function editExpense(id) {
-  const transaction = transactions.find(exp => exp.id === id);
+  const transaction = transactions.find(trans => trans.id === id);
   if (!transaction) return;
 
   typeInput.value = transaction.type;
@@ -64,7 +64,7 @@ function editExpense(id) {
   amountInput.value = Math.abs(transaction.amount);
   dateInput.value = transaction.date;
 
-  transactions = transactions.filter(exp => exp.id !== id);
+  transactions = transactions.filter(trans => trans.id !== id);
   saveAndUpdate();
 }
 
@@ -74,31 +74,31 @@ function updateUI() {
   let total = 0;
 
   transactions
-    .filter(exp => {
+    .filter(trans => {
       const matchesType =
         !typeFilter || !typeFilter.value ||
         typeFilter.value === "all" ||
-        typeFilter.value === exp.type;
+        typeFilter.value === trans.type;
 
       const matchesDate =
         !dateFilter || !dateFilter.value ||
-        exp.date === dateFilter.value;
+        trans.date === dateFilter.value;
 
       return matchesType && matchesDate;
     })
-    .forEach(exp => {
-      total += exp.amount;
+    .forEach(trans => {
+      total += trans.amount;
 
       const tr = document.createElement("tr");
-      tr.className = exp.type === "income" ? "income" : "expense";
+      tr.className = trans.type === "income" ? "income" : "expense";
 
       tr.innerHTML = `
-        <td>${capitalize(exp.type)}</td>
-        <td>RWF${exp.amount.toFixed(2)}</td>
-        <td>${exp.date}</td>
+        <td>${capitalize(trans.type)}</td>
+        <td>RWF${trans.amount.toFixed(2)}</td>
+        <td>${trans.date}</td>
         <td>
-          <button title="Edit" onclick="editExpense(${exp.id})">✏️</button>
-          <button title="Delete" onclick="deleteExpense(${exp.id})">🗑️</button>
+          <button title="Edit" onclick="editExpense(${trans.id})">✏️</button>
+          <button title="Delete" onclick="deleteExpense(${trans.id})">🗑️</button>
         </td>
       `;
 
