@@ -26,7 +26,7 @@ form.addEventListener("submit", function (e) {
     alert("Please fill in all fields correctly.");
     return;
   }
-
+//Make the amount negative if type is "expense"
   const adjustedAmount = type === "expense" ? -Math.abs(amount) : Math.abs(amount);
 
   const transaction = {
